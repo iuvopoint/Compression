@@ -56,5 +56,40 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Schemas" />
+    <Folder Include="Tables" />
+    <Folder Include="Views" />
+    <Folder Include="Stored_Procedures" />
+    <Folder Include="Functions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schemas\Compression.sql" />
+    <Build Include="Tables\Compression_Config_t.sql" />
+    <Build Include="Tables\Compression_Log_t.sql" />
+    <Build Include="Tables\Objects_to_exclude_t.sql" />
+    <Build Include="Views\Database_Schemas_to_compress_v.sql" />
+    <Build Include="Stored_Procedures\Add_new_Database_Schemas_to_Config_stp.sql" />
+    <Build Include="Stored_Procedures\Get_Objects_to_exclude_stp.sql" />
+    <Build Include="Stored_Procedures\Compress_stp.sql" />
+    <Build Include="Functions\Get_Table_Compression_DynSQL_fn.sql" />
+    <Build Include="Functions\Get_Table_Compression_ParamDef_fn.sql" />
+    <Build Include="Functions\Get_Index_Compression_DynSQL_fn.sql" />
+    <Build Include="Functions\Get_Index_Compression_ParamDef_fn.sql" />
+    <Build Include="Stored_Procedures\Sync_Config_and_Compress_all_stp.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\Compression_Config_History_t.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\msdb.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\msdb.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>msdb</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
