@@ -178,10 +178,10 @@ BEGIN
 					EXEC sp_executesql
 						 @stmt = @DynSQL
 						,@params = @ParamDef
-						,@param1 = @DatabaseName
-						,@param2 = @SchemaName
-						,@param3 = @TableName
-						,@param4 = @@Print
+						,@DatabaseName = @DatabaseName
+						,@SchemaName = @SchemaName
+						,@TableName = @TableName
+						,@Print = @@Print
 					;
 				END
 				ELSE
@@ -191,11 +191,11 @@ BEGIN
 					EXEC sp_executesql
 						 @stmt = @DynSQL
 						,@params = @ParamDef
-						,@param1 = @DatabaseName
-						,@param2 = @SchemaName
-						,@param3 = @TableName
-						,@param4 = @IndexName
-						,@param5 = @@Print
+						,@DatabaseName = @DatabaseName
+						,@SchemaName = @SchemaName
+						,@TableName = @TableName
+						,@IndexName = @IndexName
+						,@Print = @@Print
 					;
 				END -- IF @IndexName IS NULL
 			END TRY
