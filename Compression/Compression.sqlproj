@@ -72,9 +72,7 @@
     <Build Include="Stored_Procedures\Get_Objects_to_exclude_stp.sql" />
     <Build Include="Stored_Procedures\Compress_stp.sql" />
     <Build Include="Functions\Get_Table_Compression_DynSQL_fn.sql" />
-    <Build Include="Functions\Get_Table_Compression_ParamDef_fn.sql" />
     <Build Include="Functions\Get_Index_Compression_DynSQL_fn.sql" />
-    <Build Include="Functions\Get_Index_Compression_ParamDef_fn.sql" />
     <Build Include="Stored_Procedures\Sync_Config_and_Compress_all_stp.sql" />
   </ItemGroup>
   <ItemGroup>

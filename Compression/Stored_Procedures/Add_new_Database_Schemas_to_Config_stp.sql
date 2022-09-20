@@ -21,8 +21,6 @@ BEGIN
 
 	SET NOCOUNT, XACT_ABORT ON;
 
-	IF @@Print IS NULL
-		SET @@Print = 1;
 	IF @@Debug IS NULL
 		SET @@Debug = 0;
 

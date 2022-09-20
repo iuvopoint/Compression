@@ -35,7 +35,6 @@ BEGIN
 		DECLARE @IndexName NVARCHAR(128);
 
 		DECLARE @DynSQL NVARCHAR(4000);
-		DECLARE @ParamDef NVARCHAR(128);
 
 		DECLARE @AllDatabasesSchemasAndTables TABLE (
 			 [Database_Name] SYSNAME NOT NULL
@@ -99,7 +98,7 @@ BEGIN
 				[Tables].[Database_Name] = [Config].[Database_Name]
 			AND [Tables].[Schema_Name] = [Config].[Schema_Name]
 
-			-- Compress objects that not excluded only
+			-- Compress objects that are not excluded only
 			LEFT JOIN [Compression].[Objects_to_exclude_t] AS [Excl] ON
 				    [Tables].[Database_Name] = [Excl].[Database_Name]
 				AND [Tables].[Schema_Name] = [Excl].[Schema_Name]
@@ -146,20 +145,20 @@ BEGIN
 		END
 
 		-- Compress/print compression statement table by table
-		WHILE ( @@Debug = 0 AND @CurrentCompressionOrder <= @MaxCompressionOrder )
+		WHILE @CurrentCompressionOrder <= @MaxCompressionOrder
 		BEGIN
 
 			SELECT
-				 @DatabaseName = [Database_Name]
-				,@SchemaName = [Schema_Name]
-				,@TableName = [Table_Name]
-				,@IndexName = [Index_Name]
+				 @DatabaseName = ISNULL( [Database_Name], N'' )
+				,@SchemaName = ISNULL( [Schema_Name], N'' )
+				,@TableName = ISNULL( [Table_Name], N'' )
+				,@IndexName = ISNULL( [Index_Name], N'' )
 			FROM @AllDatabasesSchemasAndTables
 			WHERE [Compression_Order] = @CurrentCompressionOrder
 			;
 
 			-- No need for logging when printing the statement only
-			IF @@Print = 0
+			IF @@Print = 0 AND @@Debug = 0
 			BEGIN
 
 				INSERT INTO [Compression].[Compression_Log_t] ( [Database_Name], [Schema_Name], [Table_Name], [Index_Name], [Begin_DateTime] )
@@ -171,33 +170,33 @@ BEGIN
 			END
 
 			BEGIN TRY
-				IF @IndexName IS NULL
-				BEGIN -- Table compression
-					SET @DynSQL = [Compression].[Get_Table_Compression_DynSQL_fn]();
-					SET @ParamDef = [Compression].[Get_Table_Compression_ParamDef_fn]();
-					EXEC sp_executesql
-						 @stmt = @DynSQL
-						,@params = @ParamDef
-						,@DatabaseName = @DatabaseName
-						,@SchemaName = @SchemaName
-						,@TableName = @TableName
-						,@Print = @@Print
-					;
-				END
-				ELSE
-				BEGIN -- Index on table compression
+
+				IF @IndexName > N''
+					-- Index on table compression
 					SET @DynSQL = [Compression].[Get_Index_Compression_DynSQL_fn]();
-					SET @ParamDef = [Compression].[Get_Index_Compression_ParamDef_fn]();
-					EXEC sp_executesql
-						 @stmt = @DynSQL
-						,@params = @ParamDef
-						,@DatabaseName = @DatabaseName
-						,@SchemaName = @SchemaName
-						,@TableName = @TableName
-						,@IndexName = @IndexName
-						,@Print = @@Print
-					;
-				END -- IF @IndexName IS NULL
+				ELSE
+					-- Table compression
+					SET @DynSQL = [Compression].[Get_Table_Compression_DynSQL_fn]();
+
+				-- sp_executesql is not able to replace object names. Therefore
+				-- a replacement is required before handing dynamic query over to
+				-- sp_executesql.
+				SET @DynSQL =
+					REPLACE(
+						REPLACE(
+							REPLACE(
+								REPLACE(
+									REPLACE(
+										REPLACE( @DynSQL, N'@DatabaseName', @DatabaseName )
+									,N'@SchemaName', @SchemaName )
+								,N'@TableName', @TableName )
+							,N'@IndexName', @IndexName )
+						,N'@Print', @@Print )
+					,N'@Debug', @@Debug )
+				;
+
+				EXEC sp_executesql @stmt = @DynSQL;
+
 			END TRY
 			BEGIN CATCH
 				-- Tables can't be compressed if index is too large.
@@ -207,7 +206,7 @@ BEGIN
 			END CATCH
 
 			-- No need for updating config/log when printing the statement only
-			IF @@Print = 0
+			IF @@Print = 0 AND @@Debug = 0
 			BEGIN
 
 				SET @EndDateTime = SYSDATETIME();
@@ -224,7 +223,7 @@ BEGIN
 				WHERE [ID] = @LogID
 				;
 
-			END -- @@Print = 0
+			END -- @@Print = 0 AND @@Debug = 0
 
 			SET @CurrentCompressionOrder = @CurrentCompressionOrder + 1;
 

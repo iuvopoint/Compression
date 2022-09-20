@@ -7,12 +7,13 @@ BEGIN
 		N'IF @Print = 1' + CHAR(13) +
 		N'BEGIN' + CHAR(13) +
 		N'PRINT' + CHAR(13) +
-			N'''ALTER INDEX [@Index] ON [@Database].[@Schema].[@Table] REBUILD PARTITION = ALL''' + CHAR(13) +
-			N'''	WITH ( DATA_COMPRESSION = PAGE );''' + CHAR(13) +
+			N'''ALTER INDEX [@IndexName] ON [@DatabaseName].[@SchemaName].[@TableName] REBUILD PARTITION = ALL' + CHAR(13) +
+			N'	WITH ( DATA_COMPRESSION = PAGE );''' + CHAR(13) +
 		N'END' + CHAR(13) +
-		N'ELSE' + CHAR(13) +
+		N'' + CHAR(13) +
+		N'IF @Debug = 0' + CHAR(13) +
 		N'BEGIN' + CHAR(13) +
-		N'	ALTER INDEX [@Index] ON [@Database].[@Schema].[@Table] REBUILD PARTITION = ALL' + CHAR(13) +
+		N'	ALTER INDEX [@IndexName] ON [@DatabaseName].[@SchemaName].[@TableName] REBUILD PARTITION = ALL' + CHAR(13) +
 		N'		WITH ( DATA_COMPRESSION = PAGE );' + CHAR(13) +
 		N'END';
 
