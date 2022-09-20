@@ -137,3 +137,45 @@ EXEC [Compression].[Sync_Config_and_Compress_all_stp]
     ,@@Debug = 0
 ;
 ```
+
+## Prerequisites/Limitations
+
+Tested against SQL Server 2019. Should work with SQL Server 2016 and newer, perhaps even some older versions.
+
+_Compression_ has been tested in environments using '_regular_' tables/indices only. There could be issues in environments using things such as file tables, external tables, in-memory tables, partitions etc. In case, adjust object exclution procedure `[Compression].[Get_Objects_to_exclude_stp]` or feel free to fork this repo and add support for those objects :)
+
+
+## Installation
+
+Currently, installation via Visual Sutdio 2019 is supported only. Later on, an installation script may be added.
+
+### Installation using Visual Studio
+
+- Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) (check [pricing/license terms](https://visualstudio.microsoft.com/vs/pricing/) first)
+- In Visual Studio 2019 Installer, make sure _SQL Server Data Tools_ are installed
+- Clone _Compression_ repository
+- Open solution and deploy SSDT project _Compression_ to target database
+
+If Visual Studio 2019 pricing/licensing terms are a blocking point, you may use [Visual Studio 2017 SSDT](https://docs.microsoft.com/en-us/sql/ssdt/download-sql-server-data-tools-ssdt?view=sql-server-ver15#ssdt-for-vs-2017-standalone-installer) which is completely free of charge. But you will have to adjust project database references to `[msdb]` and `[master]` as there are different file paths for each Visual Studio version.
+
+
+### Installation using Installation Script
+
+Coming soon(er or later ;) ).
+
+
+## Contribution
+
+Yet there is neither a code of conduct nor a feature roadmap etc. Nevertheless, if you have some questions or suggestions feel free to contact us :)
+
+
+## License
+
+Copyright © 2022 [iuvopoint Business Intelligence](https://www.iuvopoint.de/).
+
+Licensed under the MIT License (MIT). See LICENSE for details.
+
+
+## Credits
+
+Your name could be listed here :)
